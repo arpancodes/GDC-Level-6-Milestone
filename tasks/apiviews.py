@@ -61,10 +61,3 @@ class TaskHistoryViewSet(ReadOnlyModelViewSet):
 	filterset_class = TaskHistoryFilter
 	def get_queryset(self):
 			return TaskHistory.objects.filter(task__external_id=self.kwargs["nested_1_external_id"], task__user=self.request.user)
-
-
-class ViewTasksAPIView(APIView):
-    def get(self, request):
-        tasks = Task.objects.filter(deleted=False)
-        data = TaskSerializer(tasks, many=True).data
-        return Response({"tasks": data})
