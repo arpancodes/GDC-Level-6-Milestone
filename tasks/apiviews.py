@@ -3,13 +3,13 @@ from rest_framework.views import APIView
 from rest_framework.serializers import ModelSerializer, UUIDField
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.response import Response
-from tasks.models import Task, TaskHistory, User, STATUS_CHOICES
+from tasks.models import Task, TaskHistory, CustomUser, STATUS_CHOICES
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend,FilterSet,CharFilter, ChoiceFilter, BooleanFilter, DateTimeFilter
 
 class UserSerializer(ModelSerializer):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ["username"]
 
 class TaskSerializer(ModelSerializer):
