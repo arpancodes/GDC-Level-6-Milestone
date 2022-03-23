@@ -41,6 +41,8 @@ urlpatterns = [
     path('tasks/<pk>' , TaskDetailView.as_view()),
     path("tasks/<pk>/delete", DeleteTaskView.as_view()),
     path("user/signup", UserCreationView.as_view()),
+    path("user/<pk>/update/", UserUpdationView.as_view()),
+    path("user/<pk>/password/", PasswordUpdationView.as_view()),
     path("user/login", UserLoginView.as_view()),
     path("user/logout", LogoutView.as_view()),
     path("complete-task/<pk>", complete_task),

@@ -4,7 +4,7 @@ Todo Manager
 
 
 {% block content %}
-<h2 class="font-light text-2xl my-8">Sign Up</h2>
+<h2 class="font-light text-2xl my-8">{{title}}</h2>
 <form method="post">
   {% csrf_token %}
   {% for field in form %}
@@ -21,6 +21,6 @@ Todo Manager
         {% endif %}
     </div>
 {% endfor %}
-  <input class="bg-red-500 text-white w-full block rounded-lg text-center p-2 cursor-pointer" type="submit" value="Sign Up" />
+  <input class="bg-red-500 text-white w-full block rounded-lg text-center p-2 cursor-pointer" type="submit" value="{{title}}" />
 </form>
 {% endblock content %}

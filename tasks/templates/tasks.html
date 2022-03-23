@@ -1,4 +1,4 @@
-{% extends "base.html" %} {% block pagetitle %}Hi {{request.user}}
+{% extends "base.html" %} {% block pagetitle %}Hi {{request.user}} <span class="flex gap-2"><a class="text-gray-500 font-normal text-base" href="/user/{{ request.user.pk }}/update/"><i class="fa-solid fa-gear"></i></a><a class="text-red-500 font-normal text-base" href="/user/logout"><i class="fa-solid fa-right-from-bracket"></i></a></span>
 {% endblock pagetitle %} {% block content %}
 {% if total_tasks %}
 <p class="text-gray-400 my-5">

@@ -130,6 +130,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = "/"
 LOGIN_URL="/user/login"
 LOGOUT_REDIRECT_URL="/"
+AUTH_USER_MODEL = 'tasks.CustomUser'
 
 BROKER_URL = "redis://localhost:6379"
 CELERY_RESULT_BACKEND = "redis://localhost:6379"

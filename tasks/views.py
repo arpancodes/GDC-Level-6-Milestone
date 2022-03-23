@@ -1,13 +1,17 @@
+from urllib import request
+from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.forms import ModelForm
 from django.core.exceptions import ValidationError
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from tasks.models import Task
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, UserChangeForm, PasswordChangeForm
+from tasks.models import CustomUser, Task
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.conf import settings
+User = settings.AUTH_USER_MODEL
 
 
 
@@ -33,16 +37,76 @@ class UserLoginView(LoginView):
 		template_name = "user_login.html"
 
 class CustomUserCreationForm(UserCreationForm):
+		preferred_email_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+		class Meta:
+				model = CustomUser
+				fields = ["username","email", "first_name", "last_name", "preferred_email_time"]
 		def __init__(self, *args, **kwargs):
 				super().__init__(*args, **kwargs)
+				self.fields['username'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+				self.fields['email'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+				self.fields['first_name'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+				self.fields['last_name'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+				self.fields['preferred_email_time'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
 				self.fields['username'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
 				self.fields['password1'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
 				self.fields['password2'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
 
 class UserCreationView(CreateView):
-    form_class = CustomUserCreationForm
-    template_name = "user_create.html"
-    success_url = "/user/login"
+		form_class = CustomUserCreationForm
+		template_name = "user_create.html"
+		success_url = "/user/login"
+
+		def get_context_data(self, **kwargs):
+				context = super(UserCreationView, self).get_context_data(**kwargs)
+				context.update({'title': "Sign Up"})
+				return context
+
+class CustomUserChangeForm(UserChangeForm):
+		preferred_email_time = forms.TimeField(widget=forms.TimeInput(attrs={'type': 'time'}))
+		class Meta:
+				model = CustomUser
+				fields = ["username","email", "first_name", "last_name", "preferred_email_time" ]
+		def __init__(self, *args, **kwargs):
+				super().__init__(*args, **kwargs)
+				self.fields['username'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+				self.fields['email'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+				self.fields['first_name'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+				self.fields['last_name'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+				self.fields['preferred_email_time'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+				self.fields['username'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+
+class UserUpdationView(LoginRequiredMixin, UpdateView):
+		model = CustomUser
+		form_class = CustomUserChangeForm
+		template_name = "user_create.html"
+		success_url = "/"
+
+		def get_context_data(self, **kwargs):
+				context = super(UserUpdationView, self).get_context_data(**kwargs)
+				context.update({'title': "Update Profile"})
+				return context
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+
+		def __init__(self, *args, **kwargs):
+				super().__init__(*args, **kwargs)
+				print(self.fields)
+				self.fields['old_password'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+				self.fields['new_password1'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+				self.fields['new_password2'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+
+class PasswordUpdationView(LoginRequiredMixin, PasswordChangeView):
+		model = CustomUser
+		form_class = CustomPasswordChangeForm
+		template_name = "user_create.html"
+		success_url = "/"
+
+		def get_context_data(self, **kwargs):
+				context = super(PasswordUpdationView, self).get_context_data(**kwargs)
+				context.update({'title': "Update Password"})
+				return context
+
 
 
 class TaskListView(LoginRequiredMixin, ListView):
@@ -98,13 +162,14 @@ class TaskCreateForm(ModelForm):
 
 		class Meta:
 				model = Task
-				fields = ["title","description", "priority"]
+				fields = ["title","description", "priority", "status"]
 
 		def __init__(self, *args, **kwargs):
 				super().__init__(*args, **kwargs)
 				self.fields['title'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
 				self.fields['description'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
 				self.fields['priority'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
+				self.fields['status'].widget.attrs['class'] = 'bg-gray-200 w-full py-2 px-3 rounded-lg text-gray-700 focus:outline-none focus:shadow-outline'
 
 def validate_priority(task):
     """Cascase validation for priority"""

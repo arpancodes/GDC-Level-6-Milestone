@@ -1,10 +1,11 @@
-
 from django.db import models
 from uuid import uuid4
-
-from django.contrib.auth.models import User
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.contrib.auth.models import AbstractUser
+
+from django.conf import settings
+User = settings.AUTH_USER_MODEL
 
 STATUS_CHOICES = (
     ("PENDING", "PENDING"),
@@ -12,6 +13,10 @@ STATUS_CHOICES = (
     ("COMPLETED", "COMPLETED"),
     ("CANCELLED", "CANCELLED"),
 )
+
+class CustomUser(AbstractUser):
+    preferred_email_time = models.TimeField(null=True, blank=True)
+
 
 class Task(models.Model):
     external_id = models.UUIDField(default=uuid4, unique=True, db_index=True)
