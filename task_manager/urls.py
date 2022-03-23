@@ -15,8 +15,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from tasks.views import TaskCreateView, TaskListView, PendingTaskListView, CompletedTaskListView, UpdateTaskView, TaskDetailView, DeleteTaskView, UserCreationView, UserLoginView, complete_task, handle_home
+from tasks.views import *
+from tasks.apiviews import *
+from rest_framework_nested import routers
+from django.urls import include
 from django.contrib.auth.views import LogoutView
+
+router = routers.SimpleRouter()
+router.register("api/task", TaskViewSet)
+tasks_router = routers.NestedSimpleRouter(router, 'api/task', )
+tasks_router.register("history", TaskHistoryViewSet, basename='task-history')
 
 
 urlpatterns = [
@@ -32,5 +40,6 @@ urlpatterns = [
     path("user/login", UserLoginView.as_view()),
     path("user/logout", LogoutView.as_view()),
     path("complete-task/<pk>", complete_task),
+    # path("api/tasks/", ViewTasksAPIView.as_view()),
     path("admin/", admin.site.urls),
-]
+] + router.urls + tasks_router.urls

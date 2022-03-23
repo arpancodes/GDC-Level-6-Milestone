@@ -7,9 +7,9 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from tasks.models import Task
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-
 from django.contrib.auth.views import LoginView
+
+
 
 
 def session_storage_view(request):
