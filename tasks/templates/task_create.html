@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% block pagetitle %}
+{{title}}
+{% endblock pagetitle %}
+{% block content %}
+<form method="post">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="my-4">
+      <label>
+        <p>{{ field.label_tag }}</p>
+      {{ field }}
+    </label>
+    <div class="text-red-500 text-sm">
+      {{ field.errors }}
+    </div>
+        {% if field.help_text %}
+        <div>{{ field.help_text|safe }}</div>
+        {% endif %}
+    </div>
+{% endfor %}
+  <input class="bg-red-500 text-white w-full block rounded-lg text-center p-2 cursor-pointer" type="submit" value="Add" />
+</form>
+{% endblock content %}

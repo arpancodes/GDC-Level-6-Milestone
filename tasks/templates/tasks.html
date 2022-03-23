@@ -1,0 +1,43 @@
+{% extends "base.html" %} {% block pagetitle %}Hi {{request.user}}
+<a class="text-red-500 font-normal text-base" href="/user/logout">Log out</a>
+{% endblock pagetitle %} {% block content %}
+{% if total_tasks %}
+<p class="text-gray-400 my-5">
+  {{ total_completed }} of {{ total_tasks }} tasks completed
+</p>
+{% elif total_pending %}
+<p class="text-gray-400 my-5">
+	{{ total_pending }} tasks pending
+</p>
+{% else %}
+<p class="text-gray-400 my-5">
+	{{ total_completed }} tasks completed.
+</p>
+{% endif %}
+{% block nav %}{% endblock nav %}
+<div>
+  {% for task in tasks %}
+  <div class="bg-gray-100 rounded-md p-4 my-2 flex justify-between items-center">
+		<div>
+		{% if task.completed %}
+    <p class="text-red-600 text-md line-through">{{ task }} [{{task.priority}}]</p>
+		{% else %}
+		<p class="text-md">{{ task }} [{{task.priority}}]</p>
+		{% endif %}
+		<p class="text-xs text-gray-400">{{task.created_date}}</p>
+	</div>
+		<div>
+			{% if not task.completed %}
+			<a class="bg-blue-500 bg-green-500 text-white p-3 rounded-md mx-1" href="/complete-task/{{ task.id }}"><i class="fa-solid fa-check-double"></i></a>
+    	<a class="bg-yellow-500 text-white  p-3 rounded-md mx-1" href="/tasks/{{ task.id }}/update"><i class="fa-solid fa-pencil"></i></a>
+			{% endif %}
+			<a class="bg-blue-500 text-white p-3 rounded-md mx-1" href="/tasks/{{ task.id }}"><i class="fa-solid fa-eye"></i></a>
+			<a class="bg-red-500 text-white  p-3 rounded-md mx-1" href="/tasks/{{ task.id }}/delete"><i class="fa-solid fa-trash"></i></a>
+	</div>
+  </div>
+  {% endfor %} {% for page in paginator.page_range %}
+  <a href="?page={{page}}">{{page.number}}</a>
+  {% endfor %}
+</div>
+<a class="bg-red-500 text-white w-full block rounded-lg text-center p-2" href="/create-task/">Add</a>
+{% endblock content %}

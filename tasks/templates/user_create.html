@@ -1,0 +1,26 @@
+{% extends "base.html" %} {% block pagetitle %}
+Todo Manager
+{% endblock pagetitle %}
+
+
+{% block content %}
+<h2 class="font-light text-2xl my-8">Sign Up</h2>
+<form method="post">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="my-4">
+      <label>
+        <p>{{ field.label_tag }}</p>
+      {{ field }}
+    </label>
+    <div class="text-red-500 text-sm">
+      {{ field.errors }}
+    </div>
+        {% if field.help_text %}
+        <div class="text-gray-400 text-sm">{{ field.help_text|safe }}</div>
+        {% endif %}
+    </div>
+{% endfor %}
+  <input class="bg-red-500 text-white w-full block rounded-lg text-center p-2 cursor-pointer" type="submit" value="Sign Up" />
+</form>
+{% endblock content %}

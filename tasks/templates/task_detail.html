@@ -1,0 +1,9 @@
+{% extends "base.html" %} {% block pagetitle %}
+{{object.title}}
+{% endblock pagetitle %}
+{% block content %}
+<h2>Description</h2>
+{{object.description}}
+<h2>Created At: {{object.created_date}}</h2>
+
+{% endblock content %}
