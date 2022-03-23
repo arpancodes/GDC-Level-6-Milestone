@@ -9,7 +9,6 @@ from django.db.models.functions import TruncMinute
 @periodic_task(run_every=timedelta(seconds=60))
 def send_email_reminder():
     print("Starting to process Emails")
-    print(datetime.now().time().strftime("%H:%M"))
     for user in CustomUser.objects.annotate(preferred_minute=TruncMinute('preferred_email_time')).filter(preferred_minute=time.strftime("%H:%M")):
         pending_qs = Task.objects.filter(user=user, completed=False, deleted=False)
         email_content = f"""
