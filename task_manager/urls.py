@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from tasks.tasks import test_background_jobs
 from tasks.views import *
 from tasks.apiviews import *
 from rest_framework_nested import routers
@@ -26,6 +27,9 @@ router.register("api/task", TaskViewSet)
 tasks_router = routers.NestedSimpleRouter(router, 'api/task', )
 tasks_router.register("history", TaskHistoryViewSet, basename='task-history')
 
+def test_bg(request):
+    test_background_jobs.delay()
+    return HttpResponse("This is from the bg")
 
 urlpatterns = [
     path("", handle_home),
@@ -40,6 +44,6 @@ urlpatterns = [
     path("user/login", UserLoginView.as_view()),
     path("user/logout", LogoutView.as_view()),
     path("complete-task/<pk>", complete_task),
-    # path("api/tasks/", ViewTasksAPIView.as_view()),
+    path("test-bg", test_bg),
     path("admin/", admin.site.urls),
 ] + router.urls + tasks_router.urls
